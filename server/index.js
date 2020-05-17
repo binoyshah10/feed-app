@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const env = require('dotenv').config();
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const streamClient = require('./lib/stream');
 
 const routes = require('./routes/index');
 
