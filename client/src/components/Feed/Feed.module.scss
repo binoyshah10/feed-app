@@ -1,0 +1,68 @@
+.postLayout {
+    display: flex;
+    justify-content: center;
+    margin-top: 1%;
+    // max-width: 1200px;
+}
+
+.commentStyle{
+    padding: 2px 5px 0px 15px;
+}
+
+.layout {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.reactionsContainer {
+    display: flex;
+}
+
+.reaction {
+    display: flex;
+
+    span {
+        margin: 0 5px 0 5px;
+    }
+
+    &:disabled {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+}
+
+.filterContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.filter {
+    width: 80%;
+    margin-top: 10px;
+}
+
+.feedItem {
+    width: 80%;
+
+    &.alert {
+        border: 1px solid #DB3737;
+    }
+
+    &.warning {
+        border: 1px solid #F2B824;
+    }
+
+    &.info {
+        border: 1px solid #29A634;
+    }
+
+    &.default {
+        border: none;
+    }
+
+}
+
+.commenter {
+    font-weight: bold;
+}

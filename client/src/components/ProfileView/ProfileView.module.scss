@@ -1,0 +1,26 @@
+.gridContainer {
+    display: grid;
+    grid-template-columns: 15% 85%;
+    grid-template-areas:
+    "navbar navbar"
+    "sidebar profileFeed"
+}
+
+.navbar {
+    grid-area: navbar;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    // height: 100%;
+    // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+    background-color: #F5F8FA;
+    border-right: 1px solid #182026;
+}
+
+.profileFeed {
+    grid-area: profileFeed;
+    min-height: 100vh;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+    background-color: #F5F8FA;
+}

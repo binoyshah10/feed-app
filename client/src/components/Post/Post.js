@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react';
+import { Button, Card, Elevation, TextArea, Intent, Classes, Icon } from "@blueprintjs/core";
+import { IconNames } from "@blueprintjs/icons";
+import styles from './Post.module.scss';
+import { GlobalContext } from "../../context/GlobalState";
 
 export default function Post({ updateFeed }) {
 
     const [formValues, setFormValues] = useState({postMessage: ''});
+    const { user } = useContext(GlobalContext);
 
     async function postToFeed() {
 
         const data = {
             ...formValues,
-            persona: 'worker',
-            id: 'worker1'
+            userType: user.type,
+            username: user.username
         }
 
         const fetchResponse = await fetch('http://localhost:5000/addActivityToFeed', {
@@ -32,10 +37,22 @@ export default function Post({ updateFeed }) {
         setFormValues({...formValues, [name]: value})
     }
     return (
-        <div>
-            Post to your feed
-            <input type="text" value={formValues.postMessage} name="postMessage" onChange={handleInputChange}/>
-            <button type="submit" onClick={postToFeed}>Post</button>
+
+        <div className={styles.cardLayout}>
+            <Card interactive={false} elevation={Elevation.TWO} style={{width: '80%'}}>
+                <p><Icon icon={IconNames.PERSON} iconSize={28} intent={Intent.PRIMARY} className={styles.personIcon}/>{user.name}</p>
+                <p>Post to your feed</p>
+                <TextArea
+                    growVertically={true}
+                    large={true}
+                    intent={Intent.PRIMARY}
+                    onChange={handleInputChange}
+                    value={formValues.postMessage}
+                    className={Classes.FILL}
+                    name="postMessage"
+                />
+                <Button type="submit" onClick={postToFeed} intent={Intent.PRIMARY} style={{marginTop: '10px', width: '80px'}}>Post</Button>
+            </Card>
         </div>
     )
 }

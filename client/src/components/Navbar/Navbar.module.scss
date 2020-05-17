@@ -1,0 +1,30 @@
+.navStyles {
+
+    &.light {
+        background-color: #8A9BA8;
+    }
+
+    &.dark {
+        background-color: yellow;
+    }
+
+    input {
+        width: 300px;
+    }
+}
+
+.notificationCount {
+    font-size: 12px;
+    background-color: #DB3737;
+    border-radius: 50%;
+    color: white;
+    padding: 2px 6px 2px 6px;
+}
+
+.button {
+    width: 150px;
+}
+
+.searchBox {
+    width: 300px;
+}
