@@ -6,7 +6,7 @@
 }
 
 .commentStyle{
-    padding: 2px 5px 0px 15px;
+    padding: 2px 5px 0px 0;
 }
 
 .layout {
@@ -46,15 +46,15 @@
     width: 80%;
 
     &.alert {
-        border: 1px solid #DB3737;
+        border: 2px solid #DB3737;
     }
 
     &.warning {
-        border: 1px solid #F2B824;
+        border: 2px solid #F2B824;
     }
 
     &.info {
-        border: 1px solid #29A634;
+        border: 2px solid #29A634;
     }
 
     &.default {

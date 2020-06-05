@@ -15,7 +15,8 @@ export default function Login() {
         setFormValues({...formValues, [name]: value})
     }
 
-    const loginUser = async () => {
+    const loginUser = async (e) => {
+        e.preventDefault();
 
         const data = {
             ...formValues
@@ -45,12 +46,14 @@ export default function Login() {
     return (
         <div className={`${styles.loginContainer}`}>
             <Card className={styles.loginCard} elevation={Elevation.FOUR}>
-                <h2>SFF Feed App</h2>
-                <h4>Username</h4>
-                <InputGroup onChange={handleInputChange} value={formValues.username} name="username" intent={Intent.PRIMARY}/>
-                <h4>Password</h4>
-                <InputGroup onChange={handleInputChange} value={formValues.password} name="password" type="password" intent={Intent.PRIMARY}/>
-                <Button intent={Intent.PRIMARY} onClick={loginUser} style={{marginTop: '10px', width: '80px'}}>Login</Button>
+                <form onSubmit={loginUser}>
+                    <h2>SFF Feed App</h2>
+                    <h4>Username</h4>
+                    <InputGroup onChange={handleInputChange} value={formValues.username} name="username" intent={Intent.PRIMARY}/>
+                    <h4>Password</h4>
+                    <InputGroup onChange={handleInputChange} value={formValues.password} name="password" type="password" intent={Intent.PRIMARY}/>
+                    <Button intent={Intent.PRIMARY} type="submit" style={{marginTop: '10px', width: '80px'}}>Login</Button>
+                </form>
             </Card>
         </div>
     )

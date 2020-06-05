@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import styles from './Notification.module.scss';
 import { GlobalContext } from "../../context/GlobalState";
 import { useHistory } from 'react-router-dom';
-import { Classes } from '@blueprintjs/core';
+import { Classes, Icon } from '@blueprintjs/core';
+import { IconNames } from "@blueprintjs/icons";
+const names = require('../../usernames.json');
 
-export default function Notification() {
+export default function Notification({ updateNotifications }) {
 
-    const { notifications } = useContext(GlobalContext);
+    const { user, notifications, setNotifications } = useContext(GlobalContext);
     const history = useHistory();
 
     const viewProfile = (actor, userType, verb) => {
@@ -17,6 +19,27 @@ export default function Notification() {
         })
     }
 
+    const dismissNotification = async (groupID, notificationActivities) => {
+        console.log(notifications)
+        const data = {
+            username: user.username,
+            notificationGroupID: groupID,
+            notificationActivities: notificationActivities
+        }
+
+        const fetchResponse = await fetch('http://localhost:5000/seenNotification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        let postResponse = await fetchResponse.json({});
+        console.log(postResponse)
+        setNotifications({})
+        updateNotifications();
+    }
+
     return (
         <div>
             {Object.keys(notifications).length > 0 &&  Object.entries(notifications).map(([key, value], index) =>  {
@@ -25,25 +48,30 @@ export default function Notification() {
                 const activityCount = value.messages.length;
                 let message = ""
                 switch(verb) {
-                    case "post":
-                        message = `${actor} has posted ${activityCount} messages`;
+                    case "info":
+                        message = `${names[actor]} updated their status`;
                         break;
                     case "alert":
-                        message = `${actor} has raised ${activityCount} alerts`;
-                      break;
-                      case "warning":
-                        message = `${actor} has raised ${activityCount} warnings`;
-                      break;
+                        message = `${names[actor]} raised ${activityCount} alerts`;
+                        break;
+                    case "warning":
+                        message = `${names[actor]} raised ${activityCount} warnings`;
+                        break;
                     default:
-                        message = `${actor} has posted ${activityCount} messages`;
-                  }                
-                
+                        message = `${names[actor]} posted ${activityCount} messages`;
+                  }              
                 return (
-                    <div className={`${styles.notificationContainer} ${Classes.POPOVER_DISMISS}`} key={index} onClick={() => viewProfile(actor, userType, verb)}>
-                        {message}
+                    <div className={`${styles.notificationContainer} ${Classes.POPOVER_DISMISS}`} key={index}>
+                        <span className={styles.notificationMessage} onClick={() => viewProfile(actor, userType, verb)}>{message}</span>
+                        <Icon icon={IconNames.CROSS} onClick={() => dismissNotification(value.groupID, value.messages)} className={styles.dismissNotification}/>
                     </div>
                 )
             })}
+            {Object.keys(notifications).length === 0 &&
+                <div className={`${styles.noNotification} ${Classes.POPOVER_DISMISS}`}>
+                    No notifications
+                </div>
+            }
         </div>
     )
 }

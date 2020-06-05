@@ -31,7 +31,6 @@ router.post('/addActivityToFeed', async (req, res) => {
 })
 
 router.get('/getFeed',async (req, res) =>{
-    console.log(req.query)
 
     const userType = req.query.userType;
     const username = req.query.username;
@@ -59,15 +58,15 @@ router.get('/getFeed',async (req, res) =>{
 router.get('/addMachineActivity', async (req, res) => {
 
     const persona = 'MachineFeed' // req.body.persona;
-    const personaId = 'Machine1' //req.body.id;
+    const personaId = 'Machine2' //req.body.id;
     const postMessage = 'Machine 1 raising alert'//req.body.postMessage;
 
     // Send data to stream
     worker1 = streamClient.feed(persona, personaId);
-    activity = { actor: personaId, verb: 'info', object: 'query', message: postMessage, type:'machine' };
+    activity = { actor: personaId, verb: 'alert', object: 'post', message: 'Temperature is over 330', type:'machine' };
 
     worker1_notification = streamClient.feed('Notifications', 'worker1');
-    activity_notification = { actor: personaId, verb: 'info', object: 'post', message: 'Warning for high temperature', type:'machine' };
+    activity_notification = activity
 
     try {
         const activityResponse = await worker1.addActivity(activity);
@@ -84,6 +83,23 @@ router.get('/addMachineActivity', async (req, res) => {
             data: "Could not post to feed"
         })
     }
+})
+
+router.get('/followers', async (req, res) => {
+
+    machineFeed = streamClient.feed('MachineFeed', 'Machine1');
+    let response = await machineFeed.followers();
+
+    let arr = []
+    console.log(response.results)
+    response.results.forEach(data => {
+        arr.push(`Notifications:${data.feed_id.split(':')[1]}`);
+    })
+    res.json({
+        success: true,
+        data: arr
+    })
+
 })
 
 router.post('/checkIfFollowed', async (req, res) => {
@@ -283,7 +299,7 @@ router.post('/login', (req, res) => {
     const password = req.body.password;
     
     if(username in credentials){
-        if(credentials[username].password == password){
+        if(credentials[username].password === password){
             console.log('You are in!');
             const streamToken = streamClient.createUserToken(username);
             res.json({
@@ -326,6 +342,34 @@ router.get('/getNotifications', async (req, res) => {
         res.status(err.status).json({
             success: false,
             data: "Could not retrieve notifications"
+        })
+    }
+})
+
+router.post('/seenNotification', async (req, res) => {
+
+    const username = req.body.username;
+    const notificationGroupID = req.body.notificationGroupID;
+    const notificationActivities = req.body.notificationActivities
+    const feedName = 'Notifications';
+
+    const notificationsFeed = streamClient.feed(feedName, username);
+
+    try {
+        const notificationSeen = await notificationsFeed.get({mark_read: [notificationGroupID], mark_seen: [notificationGroupID]});
+
+        notificationActivities.forEach(async (data) => {
+            console.log(await notificationsFeed.removeActivity(data))
+        })
+        res.json({
+            success: true,
+            message: 'Notification dismissed successfully'
+        })
+    } catch(err) {
+        console.log(err)
+        res.status(err.status).json({
+            success: false,
+            message: 'Unable to dismiss notification'
         })
     }
 })

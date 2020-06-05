@@ -5,15 +5,16 @@ import Feed from '../Feed/Feed';
 import styles from './Home.module.scss';
 import { GlobalContext } from "../../context/GlobalState";
 
-export default function Home() {
+export default function Home({ notificationRef }) {
 
-    const { user, setNotifications, notifications } = useContext(GlobalContext);
+    const { user, setNotifications, notifications, theme } = useContext(GlobalContext);
     
     const getNotifications = useCallback(async () => {
         const fetchResponse = await fetch(`http://localhost:5000/getNotifications?username=${user.username}`, {
             method: 'GET'
         });
         let notificationResults = await fetchResponse.json({});
+        // console.log(notificationResults)
         const unseenCount = notificationResults.notifications.unseen;
         // const newNotifications = []
         // for (let i = 0; i < unseenCount; i++) {
@@ -42,6 +43,7 @@ export default function Home() {
                     }
                 }
                 newNotifications[group].messages = [...newNotifications[group].messages, ...messages]
+                newNotifications[group].groupID = notificationGroup.id
             }
             else {
                 let messages = []
@@ -50,6 +52,7 @@ export default function Home() {
                 }
                 newNotifications[group] = {
                     messages,
+                    groupID: notificationGroup.id,
                     userType: notificationGroup.activities[0].type
                 }
             }
@@ -64,14 +67,14 @@ export default function Home() {
     return (
         <div className={styles.gridContainer}>
             <div className={styles.navbar}>
-                <Navbar />
+                <Navbar updateNotifications={getNotifications} notificationRef={notificationRef}/>
             </div>
 
-            <div className={styles.sidebar}>
-                <Sidebar />
+            <div className={theme === 'light' ? `${styles.sidebar} ${styles.light}` : `${styles.sidebar} ${styles.dark}`}>
+                <Sidebar notificationRef={notificationRef}/>
             </div>
 
-            <div className={styles.feed}>
+            <div className={theme === 'light' ? `${styles.feed} ${styles.light}` : `${styles.feed} ${styles.dark}`}>
                 <Feed />
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './App.css';
-import Home from './components/Home/Home';
+import Top from './components/Top/Top';
 import ProfileView from './components/ProfileView/ProfileView';
 import { GlobalProvider, GlobalContext } from './context/GlobalState';
 import { Route, Switch } from 'react-router-dom';
@@ -17,9 +17,9 @@ function App() {
   return (
     <GlobalProvider>
       <Switch>
-        <Route path="/" render={ loggedIn => ( loggedIn === true ? <Home /> : <Login />)} exact />
+        <Route path="/" render={ loggedIn => ( loggedIn === true ? <Top /> : <Login />)} exact />
         <PrivateRoute path="/home">
-          <Home/>
+          <Top/>
         </PrivateRoute>
         <PrivateRoute path="/user/:profileUsername">
           <ProfileView />

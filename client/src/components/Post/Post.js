@@ -40,7 +40,11 @@ export default function Post({ updateFeed }) {
 
         <div className={styles.cardLayout}>
             <Card interactive={false} elevation={Elevation.TWO} style={{width: '80%'}}>
-                <p><Icon icon={IconNames.PERSON} iconSize={28} intent={Intent.PRIMARY} className={styles.personIcon}/>{user.name}</p>
+                <p className={styles.username}>
+                    {/* <Icon icon={IconNames.PERSON} iconSize={28} intent={Intent.PRIMARY} className={styles.personIcon}/> */}
+                    <img src={`https://avatars.dicebear.com/api/human/${user.name}.svg`} alt="" style={{width: "30px", height: "30px"}}/>
+                    <span style={{paddingLeft: '5px' ,fontWeight: 'bold', color: '#137CBD'}}>{user.name}</span>
+                </p>
                 <p>Post to your feed</p>
                 <TextArea
                     growVertically={true}

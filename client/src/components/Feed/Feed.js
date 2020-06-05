@@ -6,6 +6,8 @@ import { IconNames } from "@blueprintjs/icons";
 import { GlobalContext } from "../../context/GlobalState";
 import Select from 'react-select';
 import CommentBox from '../CommenBox/CommentBox';
+import moment from 'moment-timezone';
+const names = require('../../usernames.json');
 
 export default function Feed() {
 
@@ -27,7 +29,7 @@ export default function Feed() {
         });
         let feedResults = await fetchResponse.json({});
         setfeedActivities(feedResults.feedData.results)
-        console.log(feedResults.feedData.results)
+        // console.log(feedResults.feedData.results)
     }, [user])
 
     useEffect(() => {
@@ -47,7 +49,7 @@ export default function Feed() {
             activityactor: activity.actor,
             actID: activity.id   
         }
-        console.log(data);
+        // console.log(data);
         const fetchResponse = await fetch('http://localhost:5000/addLiketoactivity', {
             method: 'POST',
             headers: {
@@ -68,7 +70,7 @@ export default function Feed() {
             activityactor: activity.actor,
             actID: activity.id   
         }
-        console.log(data);
+        // console.log(data);
         const fetchResponse = await fetch('http://localhost:5000/addigotthis', {
             method: 'POST',
             headers: {
@@ -77,6 +79,7 @@ export default function Feed() {
             body: JSON.stringify(data)
         });
         let postResponse = await fetchResponse.json({});
+        console.log(postResponse);
         getFeedData();
     }
 
@@ -113,30 +116,29 @@ export default function Feed() {
                         break;
                     default:
                         verbStyle = 'default'
-                  }       
-
+                }       
+                const time = moment.tz(activity.time, "UTC").startOf('minute').fromNow();
                 return (
                     <div key={activity.id} className={styles.postLayout}>
                         <Card interactive={false} elevation={Elevation.TWO} className={`${styles.feedItem} ${styles[verbStyle]}`}>
-                        <p><Icon icon={ activity.type === 'machine' ?  IconNames.TRACTOR : IconNames.PERSON} iconSize={20} intent={Intent.PRIMARY} className={styles.personIcon}/>
-                            {activity.actor}</p>
-                        <p>{activity.message}</p>
+                        <p>
+                            <Icon icon={ activity.type === 'machine' ?  IconNames.TRACTOR : IconNames.PERSON} iconSize={20} intent={Intent.PRIMARY} className={styles.personIcon}/>
+                            <span style={{paddingLeft: '5px', fontWeight: 'bold', color: '#137CBD' }}>{names[activity.actor]}</span>
+                            <span style={{float: 'right'}}>{time}</span>
+                        </p>
+                        <p>{activity.message}</p>    
                         <div className={styles.reactionsContainer}>
-                            <div className={styles.reaction} disabled={activity.latest_reactions.gotthis?.length > 0 ? true : false}>
+                            <div className={styles.reaction} disabled={activity.latest_reactions.gotthis?.length > 0 ? true : false} style={{marginBottom: '7px'}}>
                                 <Icon icon={IconNames.HAND} iconSize={14} intent={activity.latest_reactions.gotthis?.length > 0 ?Intent.SUCCESS : Intent.PRIMARY} onClick={() => gotThis(activity)}/>
-                                    <span>{activity.latest_reactions.gotthis?.length > 0 ? activity.latest_reactions.gotthis[0].data.actor+' has got this' : 'No one got this'}</span>
+                                    <span>{activity.latest_reactions.gotthis?.length > 0 ? names[activity.latest_reactions.gotthis[0].data.actor]+' has got this' : 'No one got this'}</span>
                             </div>
-                            {/* <div className={styles.reaction}>
-                                <Icon icon={IconNames.THUMBS_UP} iconSize={14} intent={Intent.PRIMARY} onClick={() => likeFeed(activity)}/> 
-                                <span> Likes</span>
-                            </div> */}
                         </div>
                         {
-                            activity.latest_reactions.comment?.length > 0  &&  activity.latest_reactions.comment.reverse().map((reaction, index) => {
-                                console.log('comment: '+ reaction.data.comment);
+                            activity.latest_reactions.comment?.length > 0  &&  activity.latest_reactions.comment.slice().reverse().map((reaction, index) => {
+                                // console.log('comment: '+ reaction.data.comment);
                                 return (
                                     <div key={index} className={styles.commentStyle}>
-                                        <p><span className={styles}>{reaction.data.actor}</span>: {reaction.data.comment}</p>
+                                        <p><span className={styles.commenter}>{names[reaction.data.actor]}</span>: {reaction.data.comment}</p>
                                     </div>
                                 )
                             })

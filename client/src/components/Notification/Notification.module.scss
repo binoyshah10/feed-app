@@ -1,7 +1,33 @@
 .notificationContainer {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    height: 40px;
+
+    span {
+        padding-right: 20px;
+    }
+
+    &:hover {
+        background-color: #2B95D6;
+        color: white;
+        cursor: pointer;
+    }
+}
+
+.notificationMessage {
+    padding-left: 20px;
+}
+
+.noNotification {
+    display: flex;
     justify-content: center;
     align-items: center;
     width: 300px;
     height: 40px;
+}
+
+.dismissNotification {
+    padding: 10px;
 }

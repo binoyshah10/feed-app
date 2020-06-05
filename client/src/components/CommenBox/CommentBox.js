@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { TextArea, Button, Intent } from "@blueprintjs/core";
 import { GlobalContext } from "../../context/GlobalState";
+const names = require('../../usernames.json');
 
 export default function CommentBox({ activity, updateFeed }) {
 
